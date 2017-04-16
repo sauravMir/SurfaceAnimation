@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         circleList.add(circleModel3);
         circleList.add(circleModel4);
         circleList.add(circleModel5);
-        sfDot.initDot(circleList, BitmapFactory.decodeResource(getResources(), R.drawable.circle));
+        sfDot.initDot(circleList, BitmapFactory.decodeResource(getResources(), R.drawable.circle),3);
 
 
     }

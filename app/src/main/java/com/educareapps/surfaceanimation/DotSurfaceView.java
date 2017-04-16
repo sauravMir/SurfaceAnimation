@@ -32,7 +32,7 @@ public class DotSurfaceView extends SurfaceView {
     private Path animPath;
     private PathMeasure pathMeasure;
     private float pathLength;
-    int step;            //distance each step
+    int Speed;            //distance each step
     float distance;        //distance moved
     float[] pos;
     float[] tan;
@@ -149,7 +149,7 @@ public class DotSurfaceView extends SurfaceView {
             matrix.postRotate(degrees, bm_offsetX, bm_offsetY);
             matrix.postTranslate(pos[0] - bm_offsetX, pos[1] - bm_offsetY);
             canvas.drawBitmap(bitmap, matrix, null);
-            distance += step;
+            distance += Speed;
 
         } else {
             if(counter<final_size-1){
@@ -187,18 +187,18 @@ public class DotSurfaceView extends SurfaceView {
 
     int counter=0;
     int final_size=0;
-    public void initDot(ArrayList<CircleModel> circleList, Bitmap bitmap) {
+    public void initDot(ArrayList<CircleModel> circleList, Bitmap bitmap, int finalDestination) {
         init();
         this.circleList = circleList;
         this.bitmap = bitmap;
         bm_offsetX = bitmap.getWidth() / 2;
         bm_offsetY = bitmap.getHeight() / 2;
-        step = 2;  /// initial circle move step
+        Speed = 6;  /// initial circle move step
         distance = 0;
         pos = new float[2];
         tan = new float[2];
         matrix = new Matrix();
-        final_size=circleList.size();
+        final_size=finalDestination;
         startTheThread();
     }
 
