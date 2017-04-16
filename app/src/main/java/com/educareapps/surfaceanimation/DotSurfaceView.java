@@ -117,7 +117,12 @@ public class DotSurfaceView extends SurfaceView {
     /// animation method
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void startAnimation(Canvas canvas) {
-        dotAnimation(canvas, circleList.get(0).getLeft(), circleList.get(0).getTop(), circleList.get(2).getLeft(), circleList.get(2).getTop());
+        if(counter==(final_size-1))
+        dotAnimation(canvas, circleList.get(counter).getLeft(), circleList.get(counter).getTop(),
+                circleList.get(0).getLeft(), circleList.get(0).getTop());
+        else
+            dotAnimation(canvas, circleList.get(counter).getLeft(), circleList.get(counter).getTop(),
+                    circleList.get(counter+1).getLeft(), circleList.get(counter+1).getTop());
 
     }
 
@@ -147,8 +152,14 @@ public class DotSurfaceView extends SurfaceView {
             distance += step;
 
         } else {
+            if(counter<final_size-1){
+                counter++;
+            }else{
+                counter=0;
+            }
             distance = 0;
-            running = false; // this shit handled the thread weather run or stop
+            //running = false; // this shit handled the thread weather run or stop
+            Log.e("asd","here");
         }
 
 
@@ -174,6 +185,8 @@ public class DotSurfaceView extends SurfaceView {
     private ArrayList<CircleModel> circleList;
     private Bitmap bitmap;
 
+    int counter=0;
+    int final_size=0;
     public void initDot(ArrayList<CircleModel> circleList, Bitmap bitmap) {
         init();
         this.circleList = circleList;
@@ -185,6 +198,7 @@ public class DotSurfaceView extends SurfaceView {
         pos = new float[2];
         tan = new float[2];
         matrix = new Matrix();
+        final_size=circleList.size();
         startTheThread();
     }
 
@@ -194,6 +208,14 @@ public class DotSurfaceView extends SurfaceView {
             running = true;
             surfaceThread.start();
         }
+    }
+
+
+    ///Calculating the threashold and lessening the screen
+    int xpaddingThreasHold=50;
+    int ypaddingThreasHold=50;
+    public void drawBorderPadding(int width, int height){
+
     }
 
 }
