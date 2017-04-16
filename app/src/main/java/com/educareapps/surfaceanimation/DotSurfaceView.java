@@ -4,16 +4,12 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
@@ -30,8 +26,6 @@ import java.util.ArrayList;
 public class DotSurfaceView extends SurfaceView {
     private SurfaceHolder surfaceHolder;
     private SurfaceThread surfaceThread;
-    private Paint paint;
-
     public static volatile boolean running = false;
 
     //******** animation variable  *******
@@ -82,7 +76,7 @@ public class DotSurfaceView extends SurfaceView {
         surfaceHolder.setFormat(PixelFormat.TRANSLUCENT);
 
     }
-    //////////////////////*****************  PAINT INITIALIZATION END HERE ****************///////////////////////////
+    //////////////////////*****************  THREAD INITIALIZATION END HERE ****************///////////////////////////
 
     //////////////////////*****************  SURFACE CALLBACK START HERE ****************///////////////////////////
 
@@ -102,41 +96,28 @@ public class DotSurfaceView extends SurfaceView {
             running = false;
         }
     };
-    //////////////////////*****************  SURFACE CALLBACK END HERE ****************///////////////////////////
 
+    //////////////////////*****************  SURFACE CALLBACK END HERE ****************///////////////////////////
+/// main draw method
     public void drawEveryThing(Canvas canvas) {
+        drawAllCircles(canvas);
+        startAnimation(canvas);
+
+    }
+
+    /// draw all circles
+    private void drawAllCircles(Canvas canvas) {
         for (int i = 0; i < circleList.size(); i++) {
             CircleModel circle = circleList.get(i);
             canvas.drawCircle(circle.getLeft(), circle.getTop(), circle.getRadius(), getPaint(circle.getSolidColor(), circle.getStrokeColor(), circle.isStroke()));
 
         }
-        fillPoints(canvas);
-
     }
 
-
-    private ArrayList<CircleModel> startPoint;
-    private ArrayList<CircleModel> endPoint;
-
-
+    /// animation method
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void fillPoints(Canvas canvas) {
-        startPoint = new ArrayList<>();
-        endPoint = new ArrayList<>();
-        for (int i = 0; i < circleList.size(); i = i + 2) {
-            CircleModel circleModel = circleList.get(i);
-            startPoint.add(circleModel);
-        }
-        for (int j = 1; j < circleList.size(); j = j + 2) {
-            CircleModel circleModel = circleList.get(j);
-            endPoint.add(circleModel);
-        }
-
-        AnimPoints animPoints = new AnimPoints(startPoint, endPoint);
-        for (int k = 0; k < animPoints.getStartPoint().size(); k++) {
-            dotAnimation(canvas, animPoints.getStartPoint().get(k).getLeft(), animPoints.getStartPoint().get(k).getTop(), animPoints.getEndPoint().get(k).getLeft(), animPoints.getEndPoint().get(k).getTop());
-        }
-
+    private void startAnimation(Canvas canvas) {
+        dotAnimation(canvas, circleList.get(0).getLeft(), circleList.get(0).getTop(), circleList.get(2).getLeft(), circleList.get(2).getTop());
 
     }
 
@@ -151,11 +132,11 @@ public class DotSurfaceView extends SurfaceView {
         animPath.close();
 
         pathMeasure = new PathMeasure(animPath, false);
-        pathLength = pathMeasure.getLength();
-//        canvas.drawPath(animPath, getPaint(Color.RED, Color.WHITE, false));
+        pathLength = pathMeasure.getLength(); /// animation total path
         Log.e("Called", "flyStarAnimation");
-        if (distance < pathLength/2) {
-//            canvas.drawColor(0, PorterDuff.Mode.LIGHTEN);
+        if (distance < pathLength / 2) {
+            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+            drawAllCircles(canvas);
             pathMeasure.getPosTan(distance, pos, tan);
 
             matrix.reset();
@@ -167,20 +148,12 @@ public class DotSurfaceView extends SurfaceView {
 
         } else {
             distance = 0;
-            running = false;
+            running = false; // this shit handled the thread weather run or stop
         }
 
 
     }
 
-/*
-    Paint getDashedLinePaint() {
-        Paint mPaint = new Paint();
-        mPaint.setColor(Color.WHITE);
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setPathEffect(new DashPathEffect(new float[]{5, 10, 15, 20}, 0));
-        return mPaint;
-    }*/
 
     private Paint getPaint(int solidColor, int strokeColor, boolean stroke) {
         Paint paint = new Paint();
@@ -207,7 +180,7 @@ public class DotSurfaceView extends SurfaceView {
         this.bitmap = bitmap;
         bm_offsetX = bitmap.getWidth() / 2;
         bm_offsetY = bitmap.getHeight() / 2;
-        step = 5;
+        step = 15;  /// initial circle move step
         distance = 0;
         pos = new float[2];
         tan = new float[2];
@@ -215,57 +188,12 @@ public class DotSurfaceView extends SurfaceView {
         startTheThread();
     }
 
+    /// thread control method
     void startTheThread() {
         if (surfaceThread != null) {
             running = true;
             surfaceThread.start();
         }
     }
-
-    //////////////////////*****************  BITMAP RESIZED METHOD ARE START HERE ****************///////////////////////////
-    /*  image resize and get circular method*/
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-
-        Log.e("Progress: ", String.valueOf(height) + "," + String.valueOf(width));
-
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-
-        Log.e("New Progress: ", String.valueOf(scaleHeight) + "," + String.valueOf(scaleWidth));
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width <= 1 ? 10 : width, height <= 1 ? 10 : height, matrix, false);
-        //  bm.recycle();
-        bm = null;
-        return resizedBitmap;
-    }
-
-    private Bitmap getCircleBitmap(Bitmap bitmap) {
-        final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(output);
-
-        final int color = Color.RED;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        final RectF rectF = new RectF(rect);
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        canvas.drawOval(rectF, paint);
-
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-        return output;
-    }
-    //////////////////////*****************  BITMAP RESIZED METHOD ARE END HERE ****************///////////////////////////
 
 }
