@@ -180,7 +180,7 @@ public class DotSurfaceView extends SurfaceView {
         this.bitmap = bitmap;
         bm_offsetX = bitmap.getWidth() / 2;
         bm_offsetY = bitmap.getHeight() / 2;
-        step = 15;  /// initial circle move step
+        step = 2;  /// initial circle move step
         distance = 0;
         pos = new float[2];
         tan = new float[2];

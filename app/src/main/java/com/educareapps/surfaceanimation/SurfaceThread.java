@@ -34,7 +34,7 @@ public class SurfaceThread extends Thread {
                 dotSurfaceView.getHolder().unlockCanvasAndPost(canvas);
             }
             try {
-                sleep(50);
+                sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
