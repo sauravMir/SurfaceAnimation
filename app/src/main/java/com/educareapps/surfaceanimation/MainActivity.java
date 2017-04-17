@@ -28,14 +28,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fiilDummyData() {
-        circleModel = new CircleModel (100, 100, 10, Color.BLACK, Color.WHITE, true);
-        circleModel1 = new CircleModel(270, 100, 10, Color.GREEN, Color.WHITE, true);
+        circleModel = new CircleModel(100, 100, 30, Color.BLACK, Color.WHITE, true, "1");
+        circleModel1 = new CircleModel(270, 100, 30, Color.GREEN, Color.WHITE, true, "2");
 
-        circleModel2 = new CircleModel(300, 200, 10, Color.MAGENTA, Color.WHITE, true);
-        circleModel3 = new CircleModel(470, 200, 10, Color.BLUE, Color.WHITE, true);
+        circleModel2 = new CircleModel(440, 100, 30, Color.MAGENTA, Color.WHITE, true, "3");
+        circleModel3 = new CircleModel(270, 200, 30, Color.BLUE, Color.WHITE, true, "4");
 
-        circleModel4 = new CircleModel(500, 300, 10, Color.RED, Color.WHITE, true);
-        circleModel5 = new CircleModel(680, 300, 10, Color.GRAY, Color.WHITE, true);
+        circleModel4 = new CircleModel(100, 300, 30, Color.RED, Color.WHITE, true, "5");
+        circleModel5 = new CircleModel(270, 300, 30, Color.GRAY, Color.WHITE, true, "6");
 
         circleList = new ArrayList<>();
         circleList.add(circleModel);
@@ -44,8 +44,9 @@ public class MainActivity extends AppCompatActivity {
         circleList.add(circleModel3);
         circleList.add(circleModel4);
         circleList.add(circleModel5);
-        sfDot.initDot(circleList, BitmapFactory.decodeResource(getResources(), R.drawable.circle),3);
-
+        sfDot.initDot(circleList, BitmapFactory.decodeResource(getResources(), R.drawable.circle), 6);
 
     }
+
+
 }

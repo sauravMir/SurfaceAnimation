@@ -10,15 +10,28 @@ public class CircleModel {
     private float radius;
     private int solidColor;
     private int strokeColor;
-    private  boolean isStroke;
+    private boolean isStroke;
+    private String circleText;
 
-    public CircleModel(float left, float top, float radius, int solidColor, int strokeColor, boolean isStroke) {
+    public CircleModel(float left, float top, float radius, int solidColor, int strokeColor, boolean isStroke, String circleText) {
         this.left = left;
         this.top = top;
         this.radius = radius;
         this.solidColor = solidColor;
         this.strokeColor = strokeColor;
         this.isStroke = isStroke;
+        this.circleText = circleText;
+    }
+
+    public CircleModel() {
+    }
+
+    public String getCircleText() {
+        return circleText;
+    }
+
+    public void setCircleText(String circleText) {
+        this.circleText = circleText;
     }
 
     public float getLeft() {
